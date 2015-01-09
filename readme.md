@@ -9,6 +9,8 @@ The github project browser is open-sourced software licensed under the [MIT lice
 
 ## Installation:
 
+Before you start, be sure you have an api token set in you github account with read access to repo and user.
+
 ### 1. Modify your composer.json :
 	
 -	add to "require" block:
