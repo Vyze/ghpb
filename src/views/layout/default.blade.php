@@ -8,7 +8,6 @@
 <body>
 <div class="global-wrapper">
     <iframe id="mainframe" class="w0"
-{{--        src="{{URL::route('project',array('owner'=>'', 'name'=>''))}}">--}}
         src="{{URL::route('project')}}">
         @yield('content')
     </iframe>

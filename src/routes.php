@@ -11,7 +11,7 @@
 |
 */
 
-$path = Config::get('ghpb::index_route','ghpb') .'/';
+$path = '/'.Config::get('ghpb::index_route','ghpb') .'/';
 Route::get($path,                            array('as' => 'indexpage',       'uses' => 'vyze\ghpb\GhpbController@showIndexPage'));
 Route::get($path.'project',                  array('as' => 'project',         'uses' => 'vyze\ghpb\GhpbController@showProject'));
 Route::post($path.'search',                  array('as' => 'search',          'uses' => 'vyze\ghpb\GhpbController@showSearch'));

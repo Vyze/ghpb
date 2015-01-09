@@ -242,7 +242,7 @@ class GhpbController extends \Controller {
         if($table =='user'){
             if($liked){
                 GhContributorModel::destroy($id);
-                return View::make('ghpb::parts.btn_star')->with(array('text'=>'Like'));
+                return \View::make('ghpb::parts.btn_star')->with(array('text'=>'Like'));
 
             }else{
                 if(GhContributorModel::find($id,['id'])) return false;

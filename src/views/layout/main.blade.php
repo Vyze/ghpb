@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>GitHub project browser</title>
-{{HTML::style('packages/vyze/ghpb/css/styles.css')}}
-    {{--{{HTML::style('css/styles.css')}}--}}
-    {{--{{HTML::script('js/jquery-2.1.3.min.js')}}--}}
-    {{--{{HTML::script('packages/bootstrap/js/bootstrap.min.js') }}--}}
-    {{--{{HTML::script('js/ghpb.js') }}--}}
-    {{HTML::style('packages/vyze/ghpb/css/styles.css')}}
-    {{HTML::script('packages/vyze/ghpb/js/jquery-2.1.3.min.js')}}
+    {{HTML::style('packages/ghpb/css/styles.css')}}
+    {{HTML::script('packages/ghpb/js/jquery-2.1.3.min.js')}}
     {{HTML::script('packages/bootstrap/js/bootstrap.min.js') }}
-    {{HTML::script('packages/vyze/ghpb/js/ghpb.js') }}
+    {{HTML::script('packages/ghpb/js/ghpb.js') }}
     <script>
     //change like status
     $().ready(function(){
@@ -69,13 +64,11 @@
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" {{--style="height: 1px;"--}}>
 
           {{Form::model(null, array('route'=>'search', 'class'=>'navbar-form navbar-right'))}}
-          {{--<div class="form-group">--}}
             <div class="form-group">
               {{Form::text('query', null, array('id'=>"search_input", 'placeholder'=>"Search", 'class'=>"w0", 'autocomplete'=>"off"))}}
               <button type="submit" id="search_submit" class="input-b"><span class="glyphicon glyphicon-search"></span></button>
               <button type="reset" id="search_clear" class="input-b"><span class="glyphicon glyphicon-remove-sign"></span></button>
             </div>
-          {{--</div>--}}
           {{Form::close()}}
           <div class="main-nav navbar-right">
             <a id="main-b" href="{{URL::route('project')}}" title="home"><span class="glyphicon glyphicon-home"></span><span class="visible-xs-inline-block">Home</span></a>
