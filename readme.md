@@ -19,7 +19,7 @@ The github project browser is open-sourced software licensed under the [MIT lice
 	
         "php artisan config:publish graham-campbell/github",
         "php artisan config:publish vyze/ghpb",
-        "php artisan asset:publish --path='vendor/vyze/ghpb/public/' ghpb'",
+        "php artisan asset:publish --path='vendor/vyze/ghpb/public/' ghpb",
         "php artisan asset:publish --path='vendor/twbs/bootstrap/dist/' bootstrap",
 
 -    modify you app/config/app.php :
