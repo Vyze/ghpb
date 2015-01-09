@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>GitHub project browser</title>
-    {{HTML::style('packages/vyze/ghpb/css/styles.css')}}
+    {{HTML::style('packages/ghpb/css/styles.css')}}
 </head>
 <body>
 <div class="global-wrapper">
