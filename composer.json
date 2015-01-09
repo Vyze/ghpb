@@ -1,0 +1,28 @@
+{
+    "name": "vyze/ghpb",
+    "type": "package",
+    "description": "A simple browser for github projects. Package for laravel 4",
+    "authors": [
+        {
+            "name": "vyze"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.5.0",
+        "illuminate/support": "4.2.*",
+        "graham-campbell/github": "~1.0",
+        "twbs/bootstrap": "~3.2"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/models",
+            "src/controllers"
+        ],
+        "psr-0": {
+            "Vyze\\Ghpb\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

@@ -1,0 +1,161 @@
+// ==========================================================
+// General
+// ==========================================================
+
+.w0{
+  width:100%;
+}
+.mw0{
+  min-width: 100%;
+}
+.h0{
+  height: 100%;
+}
+.mh0{
+  min-height: 100%;
+}
+
+.w70{
+  width:70%;
+}
+.mxw376{
+  max-width: 376px;
+}
+
+.cont-wrapper{
+  width: @desktopWidth;
+  margin:auto;
+  overflow: hidden;
+}
+
+// ---------------
+//  Shapes
+// ---------------
+.skew25{
+  -webkit-transform: skewX(-25deg); /* For Safari and Chrome */
+  -moz-transform: skewX(-25deg); /* For Firefox */
+  -o-transform: skewX(-25deg); /* For Opera */
+  -ms-transform: skewX(-25deg); /* For IE */
+  transform: skewX(-25deg); /* CSS3 */
+}
+.skew25c{
+  -webkit-transform: skewX(25deg); /* For Safari and Chrome */
+  -moz-transform: skewX(25deg); /* For Firefox */
+  -o-transform: skewX(25deg); /* For Opera */
+  -ms-transform: skewX(25deg); /* For IE */
+  transform: skewX(25deg); /* CSS3 */
+}
+// Shapes ---
+
+
+// ---------------
+//  Typography
+// ---------------
+
+.lato_reg{
+  font-family: @font-family-lato;
+}
+
+.h-big{
+  h1{
+    font-size: 428.57%;//60px
+  }
+  h2{
+    font-size: 257.14%;//36px
+  }
+}
+
+
+.form-error-message{
+  color:@brand-danger;
+}
+// Typography ---
+
+
+// ---------------
+//  Layout
+// ---------------
+
+.float-left{
+  float:left;
+}
+.float-right{
+  float: right;
+}
+.t-view {
+  display:table;
+}
+.iln-b-view{
+  display: inline-block;
+}
+.tc-view {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+// Layout ---
+
+
+// ---------------
+//  Colors
+// ---------------
+
+//category colors:
+.cat_orange{
+  background: rgba(240,104,73,0.9);
+}
+.cat_champ{
+  background: rgba(185,173,127,0.9);
+}
+.cat_magenta{
+  background: rgba(157,93,169,0.9);
+}
+.cat_torquoise{
+  background: rgba(71,197,204,0.9);
+}
+
+.link-color{
+  color: @link-color;
+}
+// Colors ---
+
+// ---------------
+//  Button style override
+// ---------------
+
+// Mixin for generating new styles
+.btn-styles(@btn-color: #555) {
+  #gradient > .vertical(@start-color: @btn-color; @end-color: darken(@btn-color, 12%));
+  .reset-filter(); // Disable gradients for IE9 because filter bleeds through rounded corners
+  background-repeat: repeat-x;
+  border-color: darken(@btn-color, 14%);
+
+  &:hover,
+  &:focus  {
+    background-color: darken(@btn-color, 12%);
+    background-position: 0 -15px;
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(@btn-color, 12%);
+    border-color: darken(@btn-color, 14%);
+  }
+
+  &:disabled,
+  &[disabled] {
+    background-color: darken(@btn-color, 12%);
+    background-image: none;
+  }
+}
+
+
+// Apply the mixin to the buttons
+.btn-fb { .btn-styles(@btn-primary-bg);}
+.btn-tw { .btn-styles(@btn-info-bg); }
+.btn-pint { .btn-styles(@btn-danger-bg); }
+.btn-mail { .btn-styles(#c7c7c7); }
+
+// Button style override ---
+// ----------------------------------------------------------
+
