@@ -22,7 +22,6 @@ class CreateGhpbRepo extends Migration {
             $table->string('owner');
 
             //keys
-            $table->primary('id');
             $table->index('ghuser_id');
         });
     }
