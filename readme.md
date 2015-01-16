@@ -24,6 +24,8 @@ Before you start, be sure you have an api token set in you github account with r
         "php artisan asset:publish --path='vendor/vyze/ghpb/public/' ghpb",
         "php artisan asset:publish --path='vendor/twbs/bootstrap/dist/' bootstrap",
 
+### 2. config
+
 -    modify you app/config/app.php :
 	
         'providers' => array(
@@ -31,8 +33,6 @@ Before you start, be sure you have an api token set in you github account with r
          'GrahamCampbell\GitHub\GitHubServiceProvider', //GitHub API
          'Vyze\Ghpb\GhpbServiceProvider', //GitHub project browser
         )
-
-### 2. config
 
 -   app/config/packages/graham-campbell/config.php:
 	add your github api token here:
