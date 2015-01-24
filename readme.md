@@ -7,6 +7,10 @@
 The github project browser is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
 
 
+## Description
+This is an add-on for Laravel 4. Main functional is to search projects and users on github.com , to show their details, to fix like status in local database for chosen item.
+You can watch screenshots from docs/screenshots/.
+
 ## Installation:
 
 Before you start, be sure you have an api token set in you github account with read access to repo and user.
