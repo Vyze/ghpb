@@ -1,7 +1,7 @@
 <div class="project_item">
     <div class="row">
         {{HTML::linkRoute('project',$repo['name'],
-            array('owner'=>$repo['owner'], 'name'=>$repo['name']),
+            array('owner'=>is_array($repo['owner']) ? $repo['owner']['login'] : $repo['owner'], 'name'=>$repo['name']),
             array('class'=>'h3 col-md-6 link-color','title'=>$repo['name'],'target'=>'_self')
         )}}
 

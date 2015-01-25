@@ -15,10 +15,6 @@ class GhpbController extends \Controller {
      */
     protected $config;
 
-    /**
-     * @var string current user's ID
-     */
-    protected $cur_user_id = '';
 
     /**
      * Setup the layout used by the controller.
@@ -49,8 +45,6 @@ class GhpbController extends \Controller {
 
         $def_owner = Config::get('ghpb::default_ghowner');
         $def_name = Config::get('ghpb::default_ghproject');
-//        $def_owner = 'Yiisoft';
-//        $def_name = 'yii';
 
         $owner = array_key_exists('owner',$_GET)? $_GET['owner']: '';
         $name = array_key_exists('name',$_GET)? $_GET['name']: '';
@@ -66,15 +60,9 @@ class GhpbController extends \Controller {
             $properties['title']='Project';
         }
 
-        $project = GitHub::repo()->show($owner, $name);
-        $project['github_repo']='https://github.com/'.$project['full_name'];
-        $contributors = Github::repo()->contributors($owner,$name);
+        $project = GhRepoModel::getRepo($owner, $name);
+        $contributors = GhContributorModel::getRepoUsers($owner,$name);
 
-        //check liked
-        $this->addLikeAttributes($project,'repo',true);
-        $this->addLikeAttributes($contributors,'user');
-
-//        dd($project);
         return \View::make('ghpb::pages.project',array('properties'=>$properties, 'project'=>$project,'contributors'=> $contributors));
     }
 
@@ -85,34 +73,22 @@ class GhpbController extends \Controller {
         $properties['title']='Search';
         $properties['query'] = $q;
         $properties['show_repo_user'] = true;
-        $q_fomated = str_replace(' ','+',trim($q));
-        //search result
-        $list =  GitHub::repo()->find($q_fomated);
-        $repositories = $list['repositories'];
 
-        //check likes
-        $this->addLikeAttributes($repositories,'repo');
+        //search result
+        $repositories = GhRepoModel::getSearched($q);
 
         return \View::make('ghpb::pages.search',array('properties'=>$properties,'repositories'=>$repositories));
     }
 
     public function showUser() {
 
-
-        if(!$name = $_GET['name']){
+        if(!$name = array_key_exists('name',$_GET) ? $_GET['name'] : false){
             return "Incorrect username";
         }
 
-        $properties =  GitHub::users()->show($name);
-        $properties['title']= 'User';
-        $properties['show_repo_user'] = false;
+        $properties =  GhContributorModel::getUser($name);
+        $repositories = GhRepoModel::getUserRepos($name);
 
-        $repositories = GitHub::users()->repositories($name);
-
-        //check likes
-        $this->addLikeAttributes($properties,'user',true);
-        $this->addLikeAttributes($repositories,'repo');
-//        dd($properties);//DEBUG
         return \View::make('ghpb::pages.user',array('properties'=>$properties,'repositories'=>$repositories));
     }
 
@@ -123,7 +99,12 @@ class GhpbController extends \Controller {
     private function createGhUser() {
 
         $cur_user = GitHub::me()->show();
-        $this->cur_user_id= $cur_user['id'];
+
+        /**
+         * Define cur_user_id constant for the namespace vyze\ghpb
+         */
+        define('cur_gh_user_id',$cur_user['id']);
+
         if ($cur_user && !GhUserModel::find($cur_user['id'],array('id'))){
 
             $ghpb_user = new GhUserModel;
@@ -137,141 +118,25 @@ class GhpbController extends \Controller {
     }
 
     /**
-     * Return the same array, but with additional attributes for every element:
-     * attr. 'datatype' = $type
-     * attr. 'liked': true if there is such record in database
-     * attr. 'id' for repo would switch to repo's owner
-     * @param array $source
-     * @param bool $only_one set to TRUE if you operate with only element
-     * @param string type set source type if empty (user,repo etc.)
-     * @return array
-     */
-    private function addLikeAttributes(&$source = array(), $type, $only_one = false) {
-
-        if(!$source) return;
-
-        if($type=='user'){
-            if($only_one){
-                $source['type']=$type;
-                $likedItems =  $this->getLikedUsers($source['id']);
-//                dd($likedItems);
-                $source['liked'] = in_array($source['id'],$likedItems);
-
-            }else{
-                $likedItems =  $this->getLikedUsers();
-
-                foreach ($source as &$el) {
-                    $el['type']=$type;
-                    $el['liked'] = in_array($el['id'],$likedItems);
-                }
-            }
-        }else{
-            if($only_one){
-                $source['type']= $type;
-                $source['id']= $source['owner']['login'];
-                $likedItems =  $this->getLikedRepos($source['id'], $source['name']);
-                $source['liked'] = in_array($source['full_name'],$likedItems);
-
-            }else{
-                $likedItems =  $this->getLikedRepos();
-
-                foreach ($source as &$el) {
-
-                    if(array_key_exists('full_name',$el)){
-                        $el['id']= $el['owner']['login'];
-                        $key = $el['full_name'];
-                    }else{
-                        $el['id']= $el['owner'];
-                        $key = $el['owner'].'/'.$el['name'];
-                    }
-
-                    $el['type'] = $type;
-                    $el['liked'] = in_array($key,$likedItems);
-                }
-            }
-        }
-
-    }
-
-    /**
-     * Get IDs of liked users
-     * @param string $id
-     * @return array list
-     */
-    protected function getLikedUsers($id = '') {
-
-        $where = array('ghuser_id'=> $this->cur_user_id);
-        if($id) $where['id'] = $id;
-
-        $result = GhContributorModel::where($where)->get(array('id'));
-
-        return array_column($result->toArray(),'id');
-    }
-
-    /**
-     * Get full names of liked repositories
-     * @param string $owner
-     * @param string $name
-     * @return array list
-     */
-    protected function getLikedRepos($owner = '', $name = '') {
-
-        $where = array('ghuser_id'=> $this->cur_user_id);
-        if($owner && $name){
-            $where['owner'] = $owner;
-            $where['name'] = $name;
-        }
-
-        $result = GhRepoModel::where($where)->get();
-
-        return array_column($result->toArray(),'fullname');
-    }
-
-    /**
      * Add/Delete record if like-button
      */
     public function changeLikeStatus() {
 
         if(!Request::ajax()) return false;
 
-        $table = $_POST['datatype'];
-        $id    = $_POST['id'];
-        $name  = $_POST['name'];
-        $liked = $_POST['liked'];
+        $properties = array(
+            'table' => $_POST['datatype'],
+            'id'    => $_POST['id'],
+            'name'  => $_POST['name'],
+            'liked' => $_POST['liked'],
+        );
 
-        if($table =='user'){
-            if($liked){
-                GhContributorModel::destroy($id);
-                return \View::make('ghpb::parts.btn_star')->with(array('text'=>'Like'));
-
-            }else{
-                if(GhContributorModel::find($id,['id'])) return false;
-
-                $record = new GhContributorModel;
-                $record->id = $id;
-                $record->ghuser_id = $this->cur_user_id;
-                $record->username = $name;
-
-                $record->save();
-                return \View::make('ghpb::parts.btn_star')->with(array('text'=>'Unlike'));
-            }
+        if($properties['table'] =='user'){
+           $result = GhContributorModel::likeItem($properties);
         }else{
-
-            if($liked){
-                GhRepoModel::destroy($id);
-                return \View::make('ghpb::parts.btn_star')->with(array('text'=>'Like'));
-
-            }else{
-                if(GhRepoModel::firstByAttributes(array('owner'=>$id,'name'=>$name))) return false;
-
-                $record = new GhRepoModel;
-                $record->owner = $id;
-                $record->name = $name;
-                $record->ghuser_id = $this->cur_user_id;
-
-                $record->save();
-                return \View::make('ghpb::parts.btn_star')->with(array('text'=>'Unlike'));
-            }
+            $result = GhRepoModel::likeItem($properties);
         }
+
+        return \View::make('ghpb::parts.btn_star')->with(array('text'=> $properties['liked'] ? 'Like':'Unlike'));
     }
 }
